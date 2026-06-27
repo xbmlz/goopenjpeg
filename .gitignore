@@ -11,6 +11,10 @@ lib/build/
 lib/build_nix/
 lib/openjpeg/build/
 
+# Conformance test data (fetched via scripts/fetch-testdata.sh)
+testdata/15444/
+testdata/dcm/
+
 # IDE / OS
 .idea/
 .vscode/

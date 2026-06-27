@@ -120,6 +120,14 @@ jobs:
           go-version: "1.26"
           cache: false
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch conformance testdata
+        run: bash scripts/fetch-testdata.sh
+
       - name: Go test
         run: go test -v ./...
 
