@@ -39,6 +39,12 @@ target_include_directories(goopenjpeg PRIVATE
 add_dependencies(goopenjpeg openjp2)
 target_link_libraries(goopenjpeg PRIVATE openjp2)
 
+set_target_properties(goopenjpeg PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+
 if(MSVC)
     set_target_properties(goopenjpeg PROPERTIES
         WINDOWS_EXPORT_ALL_SYMBOLS ON
