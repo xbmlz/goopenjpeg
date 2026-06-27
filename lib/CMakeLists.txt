@@ -1,9 +1,15 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 project(goopenjpeg C)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+if(MSVC)
+    # Static CRT for a self-contained DLL; must be set before add_subdirectory
+    # so openjp2 is built with /MT as well (avoids LNK2019 on _aligned_malloc etc.).
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
 set(OPENJPEG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/openjpeg)
 set(OPENJPEG_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/openjpeg-build)
@@ -50,11 +56,6 @@ if(MSVC)
     set_target_properties(goopenjpeg PROPERTIES
         WINDOWS_EXPORT_ALL_SYMBOLS ON
     )
-    foreach(flag CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE)
-        if(${flag} MATCHES "/MD")
-            string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
-        endif()
-    endforeach()
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
