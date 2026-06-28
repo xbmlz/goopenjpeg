@@ -2,7 +2,6 @@ package native
 
 import (
 	"os"
-	"path/filepath"
 	"runtime"
 	"unsafe"
 
@@ -31,6 +30,7 @@ func extractAndLoad(path string) (uintptr, error) {
 	}
 	handle, err := loadLibrary(path)
 	if err != nil {
+		_ = os.Remove(path)
 		return 0, err
 	}
 	if runtime.GOOS != "windows" {
@@ -40,8 +40,13 @@ func extractAndLoad(path string) (uintptr, error) {
 }
 
 func init() {
-	tmp := filepath.Join(os.TempDir(), "goopenjpeg."+libExt())
-	handle, err := extractAndLoad(tmp)
+	f, err := os.CreateTemp("", "goopenjpeg-*."+libExt())
+	if err != nil {
+		panic("goopenjpeg: failed to create temp file: " + err.Error())
+	}
+	path := f.Name()
+	_ = f.Close()
+	handle, err := extractAndLoad(path)
 	if err != nil {
 		panic("goopenjpeg: failed to load native library: " + err.Error())
 	}
